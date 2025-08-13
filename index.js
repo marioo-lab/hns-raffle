@@ -12,15 +12,27 @@ class HandshakeLottery {
     this.RAFFLE_DURATION_BLOCKS = 1008; // 7 days = 7 * 24 * 6 blocks
 
     // Predefined raffle blocks - update these for each raffle
-    this.startBlockHeight = 290300; // Set this to your desired start block
+    this.startBlockHeight = 290500; // Set this to your desired start block
     this.endBlockHeight = this.startBlockHeight + this.RAFFLE_DURATION_BLOCKS;
 
     this.availablePrizes = [
+      {
+        name: "xn--1ug4025pvlax6q",
+        display: "🧑🏻‍🍳",
+        type: "Emoji",
+        url: "https://shakeshift.com/name/xn--1ug4025pvlax6q",
+      },
       {
         name: "xn--2t8hhq",
         display: "🗡📖",
         type: "Emoji",
         url: "https://shakeshift.com/name/xn--2t8hhq",
+      },
+      {
+        name: "bitnode",
+        display: ".bitnode",
+        type: "TLD",
+        url: "https://shakeshift.com/name/bitnode",
       },
       {
         name: "xn--mt8hmp",
@@ -29,10 +41,10 @@ class HandshakeLottery {
         url: "https://shakeshift.com/name/xn--mt8hmp",
       },
       {
-        name: "bitnode",
-        display: ".bitnode",
+        name: "y0y",
+        display: ".y0y",
         type: "TLD",
-        url: "https://shakeshift.com/name/bitnode",
+        url: "https://shakeshift.com/name/y0y",
       },
     ];
 
@@ -458,13 +470,6 @@ class HandshakeLottery {
       : " (Unverified ❌)";
     document.getElementById("prizeType").textContent =
       this.currentPrize.type + verificationText;
-
-    if (this.currentPrize.nameInfo && this.currentPrize.nameInfo.info) {
-      document.getElementById("prizeValue").textContent =
-        this.currentPrize.nameInfo.info.value / 1000000 + " HNS";
-    } else {
-      document.getElementById("prizeValue").textContent = "? HNS";
-    }
 
     document.getElementById("lotteryAddress").textContent = this.lotteryAddress;
     document.getElementById("entryFee").textContent = this.entryFee.toString();
