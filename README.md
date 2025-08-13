@@ -31,7 +31,10 @@ hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5cq93
 
 ### Step 2: Send HNS
 
-Send HNS to the raffle address using any Handshake wallet:
+❗❗❗ Warning❗❗❗
+Do not send HNS to the raffle address outside the raffle Active Period, because it will not count as an entry!
+
+Send HNS to the raffle address, after the raffle starts, using any Handshake wallet:
 
 **Minimum Entry**: 1 HNS = 1 entry
 **Multiple Entries**:
