@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Handshake Raffle</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="shortcut icon" href="favicon.ico" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>
+        <img
+          src="logo-dark.svg"
+          alt="Handshake"
+          style="width: 100px; height: 100px; vertical-align: middle"
+        />
+        <span style="color: black">andshake</span> <span>Raffle</span>
+      </h1>
+
+      <div class="help-link" style="text-align: center; margin-bottom: 20px">
+        <a
+          href="https://github.com/marioo-lab/hns-raffle/blob/main/README.md"
+          target="_blank"
+          style="
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+            background: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            display: inline-block;
+          "
+        >
+          📖 How to Enter & Rules
+        </a>
+      </div>
+
+      <div class="status info" id="raffleStatus">
+        <span id="raffleStatusText">🟡 Raffle Status: Loading...</span>
+      </div>
+
+      <div class="lottery-info">
+        <h2>Current Prize</h2>
+        <a class="prize-display" id="currentPrize" target="_blank">?</a>
+        <p><strong>Prize Type:</strong> <span id="prizeType">?</span></p>
+        <p>
+          <strong>Onchain Value:</strong> <span id="prizeValue">? HNS</span>
+        </p>
+        <p><strong>Raffle Address:</strong></p>
+        <div class="address-display" id="lotteryAddress">
+          hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5cq93
+        </div>
+        <p><strong>Entry Fee:</strong> <span id="entryFee">1.0</span> HNS</p>
+
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-value" id="totalParticipants">0</span>
+            <small>Participants</small>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="totalPool">0</span>
+            <small>Total HNS Pool</small>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="timeLeft" style="font-size: 1.2em"
+              >7d 00:00</span
+            >
+            <small>Time Left</small>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="blockHeight">0</span>
+            <small>Block Height</small>
+          </div>
+        </div>
+
+        <div class="blockchain-info" id="blockchainInfo" style="display: none">
+          <p><strong>Network:</strong> <span id="networkInfo">-</span></p>
+          <p>
+            <strong>Raffle Balance:</strong>
+            <span id="lotteryBalance">0</span> HNS
+          </p>
+        </div>
+      </div>
+
+      <div class="participants-section">
+        <h3>Current Participants (<span id="participantCount">0</span>)</h3>
+        <div class="participant-list" id="participantList">
+          <p style="text-align: center; opacity: 0.7">
+            No participants yet. Be the first to enter!
+          </p>
+        </div>
+      </div>
+
+      <div class="winner-section" id="winnerSection">
+        <h2>🎉 We have a Winner! 🎉</h2>
+        <a class="prize-display" id="winnerPrize" target="_blank"></a>
+        <p><strong>Winner:</strong> <span id="winnerAddress"></span></p>
+        <p><strong>Prize:</strong> <span id="winnerPrizeText"></span></p>
+        <a
+          class="tx-hash"
+          id="winnerTxHash"
+          style="display: none"
+          target="_blank"
+        ></a>
+      </div>
+
+      <div>*All proceeds will go towards funding future HNS initiatives</div>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
