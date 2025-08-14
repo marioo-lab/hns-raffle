@@ -8,16 +8,38 @@ This is a decentralized raffle system for Handshake domains that runs entirely o
 
 ### 🎯 **Current Raffle**
 
-- **Prize**: Handshake emoji or TLDs (🃑, 🧬, 🦖, .gift)
+- **Prize**: Handshake emoji or TLDs (🃏, 🧬, 🦖, .gift)
 - **Entry Fee**: 1 HNS per entry
 - **Duration**: 7 days (1,008 blocks)
 - **Multiple Entries**: Send more HNS for more chances to win
+- **Prize Verification**: ✅ indicates verified ownership, ❌ indicates unverified
 
 ### 📅 **Raffle Timeline**
 
 1. **Waiting Period**: Raffle is scheduled but hasn't started yet
 2. **Active Period**: 7 days to submit entries
 3. **Automatic Drawing**: Winner selected when end block is reached
+
+## Prize Verification & Trust
+
+### 🔒 **Ownership Verification**
+
+Each raffle prize displays a verification status:
+
+- **✅ Verified**: The raffle operator owns this domain on-chain
+- **❌ Unverified**: Cannot confirm the operator owns this domain
+
+### 🔍 **How Verification Works**
+
+- The system automatically checks domain ownership using blockchain data
+- It compares the raffle operator's address with the domain's owner address
+- Only participate in raffles with verified prizes (✅) for guaranteed legitimacy
+
+### ⚠️ **Trust Considerations**
+
+- **Verified prizes (✅)**: Safe to participate - ownership is blockchain-confirmed
+- **Unverified prizes (❌)**: High risk - the operator may not actually own the domain
+- Always check the verification status before sending HNS
 
 ## How to Enter
 
@@ -29,9 +51,20 @@ The current raffle address is displayed on the main page:
 hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5cq93
 ```
 
-### Step 2: Send HNS
+### Step 2: Check Prize Verification
 
-❗❗❗ Warning❗❗❗
+⚠️⚠️⚠️ **IMPORTANT** ⚠️⚠️⚠️
+
+**Always verify the prize shows ✅ (verified) before entering!**
+
+- Look for the green checkmark next to the prize name
+- Unverified prizes (❌) may not be legitimate
+- Only participate in verified raffles to ensure you can actually win the domain
+
+### Step 3: Send HNS
+
+⚠️⚠️⚠️ **Warning** ⚠️⚠️⚠️
+
 Do not send HNS to the raffle address outside the raffle Active Period, because it will not count as an entry!
 
 Send HNS to the raffle address, after the raffle starts, using any Handshake wallet:
@@ -44,7 +77,7 @@ Send HNS to the raffle address, after the raffle starts, using any Handshake wal
 - 10 HNS = 10 entries
 - etc.
 
-### Step 3: Wait for Confirmation
+### Step 4: Wait for Confirmation
 
 - Your entry appears immediately but shows ⏳ (pending)
 - Once confirmed on-chain, it shows ✅ (confirmed)
@@ -100,12 +133,14 @@ hsw-cli send --account=default --address=hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5c
 - All entries are visible in real-time
 - Current pool size and participants shown
 - Block countdown to raffle end
+- Real-time prize ownership verification
 
 ### 🔍 **Blockchain Verification**
 
 - All transactions are on-chain and publicly verifiable
 - Check entries on any Handshake block explorer
 - Transaction hashes provided for each entry
+- Prize ownership verified against blockchain records
 
 ### 🏅 **Winner Verification**
 
@@ -113,6 +148,7 @@ hsw-cli send --account=default --address=hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5c
   - Winning address (truncated for privacy)
   - Original entry transaction hash
   - Prize details and transfer information
+  - Verification that the operator can actually transfer the prize
 
 ## Important Notes
 
@@ -121,15 +157,18 @@ hsw-cli send --account=default --address=hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5c
 - Minimum 1 HNS per entry
 - Entries must be sent during the active raffle period
 - Transactions outside the time window are not counted
+- **ONLY participate in raffles with verified prizes (✅)**
 
 ### 💰 **Prize Distribution**
 
-- Winners will receive the prize in their on chain address, at most 7 days after raffle end (Handshake has a 3 day transfer confirmation)
+- Winners will receive the prize in their on-chain address, at most 7 days after raffle end (Handshake has a 3 day transfer confirmation)
+- Prize transfers only possible if the operator actually owns the domain (verified ✅)
 
 ### 🔒 **Security**
 
 - Smart contract-like behavior using Bitcoin Script
 - All code is open source and auditable
+- Automatic ownership verification prevents fake raffles
 
 ### ⏱️ **Timing**
 
@@ -144,6 +183,12 @@ hsw-cli send --account=default --address=hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5c
 - Wait for blockchain confirmation (1-2 blocks)
 - Check that you sent to the correct address
 - Verify the amount meets the minimum requirement
+
+### ❓ **Prize Verification Questions**
+
+- **✅ Green checkmark**: Verified ownership - safe to participate
+- **❌ Red X**: Unverified ownership - high risk, avoid participation
+- Verification status updates automatically every 30 seconds
 
 ### ❓ **Raffle Status Questions**
 
@@ -162,6 +207,15 @@ hsw-cli send --account=default --address=hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5c
 **Q: Can I enter multiple times?**
 A: Yes! Each HNS sent gives you one entry. Send more HNS for more chances.
 
+**Q: What does the verification status mean?**
+A: ✅ means the raffle operator actually owns the prize domain (safe). ❌ means ownership cannot be verified (risky - avoid these raffles).
+
+**Q: Should I participate in unverified raffles?**
+A: No! Only participate in raffles showing ✅ verification. Unverified raffles may be scams where the operator doesn't actually own the prize.
+
+**Q: How is ownership verified?**
+A: The system checks the blockchain to confirm the raffle operator's address matches the domain owner's address from the Handshake name registry.
+
 **Q: What happens to the HNS I send?**
 A: Entry fees fund future raffles and platform development. This is not a gambling site.
 
@@ -174,10 +228,15 @@ A: The raffle will still end at the scheduled time. Prizes roll over to the next
 **Q: Can I get a refund?**
 A: No refunds once the raffle period begins. Only send what you can afford to lose.
 
+**Q: What if I win but the operator doesn't own the domain?**
+A: This is why verification is crucial! Always check for ✅ verification before participating to ensure legitimate prizes.
+
 ---
 
 ## Contact & Support
 
 For questions or technical support, please check the project's GitHub repository or community channels.
+
+**Remember: Only participate in verified raffles (✅) for your safety! 🔒**
 
 **Good luck! 🍀**
