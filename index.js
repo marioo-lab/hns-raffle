@@ -71,45 +71,49 @@ class HandshakeLottery {
     this.currentPrize.isVerified = await this.verifyPrizeOwnership(
       this.currentPrize
     );
-
-    console.log("Prize info:", this.currentPrize.nameInfo);
-    console.log("Prize verification:", this.currentPrize.isVerified);
   }
 
   async verifyPrizeOwnership(prize) {
     try {
-      // Get the owner address from the name info
-      if (
-        !prize.nameInfo ||
-        !prize.nameInfo.info ||
-        !prize.nameInfo.info.owner
-      ) {
+      // Check if we have valid name info
+      if (!prize.nameInfo || !prize.nameInfo.info) {
         console.log(
-          `Prize ${prize.name} has no owner info - may not be auctioned yet`
+          `Prize ${prize.name} has no name info - may not be registered yet`
         );
         return false;
       }
 
-      const ownerHash = prize.nameInfo.info.owner.hash;
-      const ownerIndex = prize.nameInfo.info.owner.index;
+      const owner = prize.nameInfo.info.owner;
 
-      // Convert the raffle address to hash format to compare
-      const raffleAddressHash = await this.getAddressHash(this.lotteryAddress);
-
-      if (!raffleAddressHash) {
-        console.error("Could not get raffle address hash for verification");
+      // Check if name has an owner (not null/empty)
+      if (
+        !owner ||
+        owner.hash ===
+          "0000000000000000000000000000000000000000000000000000000000000000" ||
+        owner.index === 4294967295
+      ) {
+        console.log(
+          `Prize ${prize.name} has no owner - name may be expired or not registered`
+        );
         return false;
       }
 
-      // Compare the owner hash with raffle address hash
-      const isOwned =
-        ownerHash === raffleAddressHash.hash &&
-        ownerIndex === raffleAddressHash.index;
+      // Get the address hash from the owner info
+      const ownerAddress = await this.getAddressFromOwner(owner);
+
+      if (!ownerAddress) {
+        console.log(`Could not resolve owner address for ${prize.name}`);
+        return false;
+      }
+
+      // Compare the owner address with raffle address
+      const isOwned = ownerAddress === this.lotteryAddress;
 
       console.log(`Prize ${prize.name} ownership verification:`, {
-        ownerHash,
-        ownerIndex,
-        raffleAddressHash,
+        ownerHash: owner.hash,
+        ownerIndex: owner.index,
+        ownerAddress,
+        raffleAddress: this.lotteryAddress,
         isOwned,
       });
 
@@ -120,45 +124,19 @@ class HandshakeLottery {
     }
   }
 
-  async getAddressHash(address) {
+  async getAddressFromOwner(owner) {
     try {
-      const response = await fetch(this.nodeUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Basic " + btoa("x:api-key"),
-        },
-        body: JSON.stringify({
-          method: "validateaddress",
-          params: [address],
-        }),
-      });
-
-      if (!response.ok) {
-        console.error(`Address validation request failed: ${response.status}`);
-        return null;
+      // The owner hash in getnameinfo is actually an outpoint reference
+      // We need to get the coin/output at that outpoint to find the address
+      const coin = await this.apiRequest(`/coin/${owner.hash}/${owner.index}`);
+      if (coin && coin.address) {
+        return coin.address;
       }
 
-      const data = await response.json();
-
-      // If the address validation doesn't give us the hash directly,
-      // we can try getting it from coin info
-      if (data.result && data.result.isvalid) {
-        // Try to get hash from coins at this address
-        const coins = await this.apiRequest(`/coin/address/${address}`);
-        if (coins && coins.length > 0) {
-          // Get hash from first coin's address info
-          const firstCoin = coins[0];
-          return {
-            hash: firstCoin.hash, // This might need adjustment based on actual API response
-            index: firstCoin.index || 0,
-          };
-        }
-      }
-
+      console.log("No address found for owner:", owner);
       return null;
     } catch (error) {
-      console.error("Address hash request failed:", error);
+      console.error("Error getting address from owner:", error);
       return null;
     }
   }
