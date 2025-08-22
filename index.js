@@ -57,7 +57,7 @@ class HandshakeLottery {
     await this.checkTransactions();
 
     // Check raffle status and draw winner immediately if needed
-    this.checkRaffleStatus();
+    await this.checkRaffleStatus();
 
     this.updateDisplay();
     this.startMonitoring();
@@ -198,11 +198,11 @@ class HandshakeLottery {
     }
   }
 
-  checkRaffleStatus() {
+  async checkRaffleStatus() {
     if (this.blockHeight > this.endBlockHeight) {
       // Raffle ended - automatically draw winner if not done yet
       if (!this.winnerDrawn && this.participants.length > 0) {
-        this.drawWinner();
+        await this.drawWinner();
         this.winnerDrawn = true;
       }
     }
@@ -335,7 +335,7 @@ class HandshakeLottery {
     this.monitoringInterval = setInterval(async () => {
       await this.connect();
       await this.checkTransactions();
-      this.checkRaffleStatus();
+      await this.checkRaffleStatus();
       this.updateDisplay();
     }, 30000);
   }
@@ -387,8 +387,15 @@ class HandshakeLottery {
     }
   }
 
-  drawWinner() {
+  async drawWinner() {
     if (this.participants.length === 0) return;
+
+    // Get the block hash at end height for more entropy
+    const blockInfo = await this.apiRequest(`/block/${this.endBlockHeight}`);
+    if (!blockInfo || !blockInfo.hash) {
+      console.error("Could not get block hash for randomness");
+      return;
+    }
 
     // Create weighted array based on entries
     const weightedParticipants = [];
@@ -398,10 +405,14 @@ class HandshakeLottery {
       }
     });
 
-    // Use block height for deterministic randomness
-    const randomIndex = this.endBlockHeight % weightedParticipants.length;
-    const winner = weightedParticipants[randomIndex];
+    // Use block hash for better entropy
+    const hashBytes = this.hexToBytes(blockInfo.hash);
+    const randomValue = this.bytesToBigInt(hashBytes);
+    const randomIndex = Number(
+      randomValue % BigInt(weightedParticipants.length)
+    );
 
+    const winner = weightedParticipants[randomIndex];
     this.showWinner(winner);
   }
 
@@ -493,6 +504,25 @@ class HandshakeLottery {
         `;
       })
       .join("");
+  }
+
+  // Helper functions for hash manipulation
+  hexToBytes(hex) {
+    // Remove '0x' prefix if present
+    hex = hex.replace(/^0x/, "");
+    const bytes = [];
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes.push(parseInt(hex.substr(i, 2), 16));
+    }
+    return bytes;
+  }
+
+  bytesToBigInt(bytes) {
+    let result = BigInt(0);
+    for (let byte of bytes) {
+      result = (result << BigInt(8)) + BigInt(byte);
+    }
+    return result;
   }
 }
 
