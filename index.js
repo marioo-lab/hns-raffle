@@ -421,8 +421,7 @@ class HandshakeLottery {
     document.getElementById("winnerPrize").textContent =
       this.currentPrize.display;
     document.getElementById("winnerPrize").href = this.currentPrize.url;
-    document.getElementById("winnerAddress").textContent =
-      winner.address.substring(0, 20) + "...";
+    document.getElementById("winnerAddress").textContent = winner.address;
     document.getElementById(
       "winnerPrizeText"
     ).textContent = `${this.currentPrize.name} (${this.currentPrize.type})`;
