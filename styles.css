@@ -47,6 +47,7 @@ h1 {
 }
 
 .prize-display {
+  text-decoration: none;
   font-size: 3em;
   margin: 20px 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
