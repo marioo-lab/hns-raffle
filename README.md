@@ -35,16 +35,14 @@ hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5cq93
 
 ## Supported Wallets
 
-Any Handshake wallet works:
+Any Handshake non-custodial wallet works:
 
 - Bob Wallet (desktop)
-- Namebase, Shakestation (web)
 - hsd-cli, hs-client (command line)
-- other wallets supporting HNS & Handshake TLDs (not exchanges)
 
 ## ⚠️ IMPORTANT:
 
-Don't enter from an exchange wallet (other than Namebase or Shakestation) because you won't be able to receive the prize
+Don't enter from an exchange wallet because you won't be able to receive the prize unless you get in touch with us
 
 ## Winner Selection
 
