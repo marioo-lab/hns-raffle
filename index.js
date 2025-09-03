@@ -12,15 +12,15 @@ class HandshakeLottery {
     this.RAFFLE_DURATION_BLOCKS = 1008; // 7 days = 7 * 24 * 6 blocks
 
     // Predefined raffle blocks - update these for each raffle
-    this.startBlockHeight = 291955; // Set this to your desired start block
+    this.startBlockHeight = 293220; // Set this to your desired start block
     this.endBlockHeight = this.startBlockHeight + this.RAFFLE_DURATION_BLOCKS;
 
     this.availablePrizes = [
       {
-        name: "wbc",
-        display: ".wbc",
-        type: "TLD",
-        url: "https://shakeshift.com/name/wbc",
+        name: "xn--1ugx245pcja4k",
+        display: "👩🏿‍💻",
+        type: "Emoji",
+        url: "https://shakeshift.com/name/xn--1ugx245pcja4k",
       },
     ];
 
