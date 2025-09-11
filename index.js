@@ -1,6 +1,6 @@
 class HandshakeLottery {
   constructor() {
-    this.nodeUrl = "https://api.handshakeapi.com/hsd";
+    this.nodeUrl = "https://hsd.hns.au";
     this.lotteryAddress = "hs1qsekzkyx5p435c0tzveqw6pfja0fk0kazd5cq93";
     this.participants = [];
     this.entryFee = 1.0;
@@ -41,7 +41,9 @@ class HandshakeLottery {
 
   async selectPrize() {
     this.currentPrize = this.availablePrizes[0];
-    this.currentPrize.nameInfo = await this.getNameInfo(this.currentPrize.name);
+    this.currentPrize.nameInfo = await this.apiRequest(
+      `/api/v1/name/${this.currentPrize.name}`
+    );
 
     // Check if the raffle operator owns this prize
     this.currentPrize.isVerified = await this.verifyPrizeOwnership(
@@ -104,7 +106,9 @@ class HandshakeLottery {
     try {
       // The owner hash in getnameinfo is actually an outpoint reference
       // We need to get the coin/output at that outpoint to find the address
-      const coin = await this.apiRequest(`/coin/${owner.hash}/${owner.index}`);
+      const coin = await this.apiRequest(
+        `/api/v1/coin/${owner.hash}/${owner.index}`
+      );
       if (coin && coin.address) {
         return coin.address;
       }
@@ -135,35 +139,8 @@ class HandshakeLottery {
     }
   }
 
-  async getNameInfo(name) {
-    try {
-      const response = await fetch(this.nodeUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Basic " + btoa("x:api-key"),
-        },
-        body: JSON.stringify({
-          method: "getnameinfo",
-          params: [name],
-        }),
-      });
-
-      if (!response.ok) {
-        console.error(`Name info request failed: ${response.status}`);
-        return null;
-      }
-
-      const data = await response.json();
-      return data.result || null;
-    } catch (error) {
-      console.error("Name info request failed:", error);
-      return null;
-    }
-  }
-
   async connect() {
-    const info = await this.apiRequest("/");
+    const info = await this.apiRequest("/api/v1/chain");
     if (info) {
       this.blockHeight = info.chain?.height || 0;
       document.getElementById("blockHeight").textContent = this.blockHeight;
@@ -227,7 +204,9 @@ class HandshakeLottery {
   }
 
   async updateBalance() {
-    const coins = await this.apiRequest(`/coin/address/${this.lotteryAddress}`);
+    const coins = await this.apiRequest(
+      `/api/v1/coin/address/${this.lotteryAddress}`
+    );
     if (coins && Array.isArray(coins)) {
       const totalBalance = coins.reduce((sum, coin) => sum + coin.value, 0);
       const hnsBalance = (totalBalance / 1000000).toFixed(6);
@@ -237,7 +216,7 @@ class HandshakeLottery {
 
   async checkTransactions() {
     const transactions = await this.apiRequest(
-      `/tx/address/${this.lotteryAddress}`
+      `/api/v1/tx/address/${this.lotteryAddress}`
     );
     if (transactions && Array.isArray(transactions)) {
       this.processTransactions(transactions);
@@ -367,7 +346,9 @@ class HandshakeLottery {
     if (this.participants.length === 0) return;
 
     // Get the block hash at end height for more entropy
-    const blockInfo = await this.apiRequest(`/block/${this.endBlockHeight}`);
+    const blockInfo = await this.apiRequest(
+      `/api/v1/block/${this.endBlockHeight}`
+    );
     if (!blockInfo || !blockInfo.hash) {
       console.error("Could not get block hash for randomness");
       return;
