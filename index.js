@@ -12,15 +12,15 @@ class HandshakeLottery {
     this.RAFFLE_DURATION_BLOCKS = 1008; // 7 days = 7 * 24 * 6 blocks
 
     // Predefined raffle blocks - update these for each raffle
-    this.startBlockHeight = 293220; // Set this to your desired start block
+    this.startBlockHeight = 294800; // Set this to your desired start block
     this.endBlockHeight = this.startBlockHeight + this.RAFFLE_DURATION_BLOCKS;
 
     this.availablePrizes = [
       {
-        name: "xn--1ugx245pcja4k",
-        display: "👩🏿‍💻",
+        name: "xn--2v9haa",
+        display: "🧬🧬🧬",
         type: "Emoji",
-        url: "https://shakeshift.com/name/xn--1ugx245pcja4k",
+        url: "https://shakeshift.com/name/xn--2v9haa",
       },
     ];
 
@@ -219,22 +219,22 @@ class HandshakeLottery {
       `/api/v1/tx/address/${this.lotteryAddress}`
     );
     if (transactions && Array.isArray(transactions)) {
-      this.processTransactions(transactions);
+      this.processTransactions(
+        transactions
+          .filter(
+            (tx) =>
+              tx.height &&
+              tx.height >= this.startBlockHeight &&
+              tx.height <= this.endBlockHeight
+          )
+          .sort((a, b) => a.mtime - b.mtime) //assure transactions are sorted by time
+      );
     }
   }
 
   processTransactions(transactions) {
     transactions.forEach((tx) => {
       if (this.isProcessed(tx.hash)) return;
-
-      // Only process transactions within the raffle period
-      if (
-        tx.height &&
-        (tx.height < this.startBlockHeight || tx.height > this.endBlockHeight)
-      ) {
-        this.markProcessed(tx.hash);
-        return;
-      }
 
       const lotteryOutput = tx.outputs?.find(
         (output) => output.address === this.lotteryAddress
@@ -245,7 +245,7 @@ class HandshakeLottery {
         const amount = lotteryOutput.value / 1000000;
 
         if (senderAddress && amount >= this.entryFee) {
-          this.addParticipant({
+          this.participants.push({
             address: senderAddress,
             amount: amount,
             entries: Math.floor(amount / this.entryFee),
@@ -270,19 +270,6 @@ class HandshakeLottery {
   markProcessed(txHash) {
     this.processedTx = this.processedTx || [];
     this.processedTx.push(txHash);
-  }
-
-  addParticipant(participant) {
-    const existingIndex = this.participants.findIndex(
-      (p) => p.address === participant.address
-    );
-
-    if (existingIndex >= 0) {
-      this.participants[existingIndex].amount += participant.amount;
-      this.participants[existingIndex].entries += participant.entries;
-    } else {
-      this.participants.push(participant);
-    }
   }
 
   startMonitoring() {
@@ -446,7 +433,8 @@ class HandshakeLottery {
       return;
     }
 
-    listElement.innerHTML = this.participants
+    const displayParticipants = [...this.participants];
+    listElement.innerHTML = displayParticipants
       .sort((a, b) => b.amount - a.amount)
       .map((participant) => {
         const status = participant.confirmed ? "✅" : "⏳";
