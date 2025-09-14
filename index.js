@@ -144,8 +144,8 @@ class HandshakeLottery {
     if (info) {
       this.blockHeight = info.chain?.height || 0;
       document.getElementById("blockHeight").textContent = this.blockHeight;
-      document.getElementById("networkInfo").textContent =
-        info.network || "unknown";
+      // document.getElementById("networkInfo").textContent =
+      //   info.network || "unknown";
       document.getElementById("blockchainInfo").style.display = "block";
       this.updateBalance();
     }
@@ -279,7 +279,7 @@ class HandshakeLottery {
       await this.checkTransactions();
       await this.checkRaffleStatus();
       this.updateDisplay();
-    }, 30000);
+    }, 5 * 60000);
   }
 
   updateTimeDisplay() {
